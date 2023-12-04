@@ -5,7 +5,7 @@ import torch
 from pathlib import Path
 from warnings import warn
 
-from bitsandbytes.cuda_setup.main import CUDASetup
+from bitsandbytes.device_setup.cuda.main import CUDASetup
 
 
 setup = CUDASetup.get_instance()
@@ -31,8 +31,8 @@ try:
     lib.cget_managed_ptr.restype = ct.c_void_p
     COMPILED_WITH_CUDA = True
 except AttributeError as ex:
-    warn("The installed version of bitsandbytes was compiled without GPU support. "
-        "8-bit optimizers, 8-bit multiplication, and GPU quantization are unavailable.")
+    warn("The installed version of bitsandbytes was compiled without CUDA GPU support. "
+        "8-bit optimizers, 8-bit multiplication, and CUDA GPU quantization are unavailable.")
     COMPILED_WITH_CUDA = False
     print(str(ex))
 
