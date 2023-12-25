@@ -1,4 +1,6 @@
 from .cuda import CUDABackend
+from .cpu import CPUBackend
+from .xpu import XPUBackend
 
 
 class Backends:
@@ -38,3 +40,5 @@ class Backends:
 
 
 Backends.register_backend("cuda", CUDABackend)
+Backends.register_backend("cpu", CPUBackend)
+Backends.register_backend("xpu", XPUBackend)
