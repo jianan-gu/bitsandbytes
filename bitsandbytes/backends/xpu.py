@@ -1,11 +1,6 @@
 # For Intel GPU (xpu is the device name for Intel GPU in PyTorch)
 import torch
-try:
-    import intel_extension_for_pytorch
-    ipex_available = True
-except ImportError:
-    ipex_available = False
-from .cpu import (
+from .common_ops import (
     double_quant_common,
     igemmlt_common,
     mm_dequant_common,
