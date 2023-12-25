@@ -3,6 +3,8 @@ from .common_ops import (
     double_quant_common,
     igemmlt_common,
     mm_dequant_common,
+    quantize_4bit_common,
+    dequantize_4bit_common,
 )
 
 Tensor = torch.Tensor
@@ -100,7 +102,8 @@ class CPUBackend:
         compress_statistics=False,
         quant_type="fp4",
     ) -> Tensor:
-        assert False, "quantize_4bit not yet implemented for CPU backend"
+        assert_on_cpu([A, absmax, out])
+        return quantize_4bit_common(A, absmax, out, blocksize, compress_statistics, quant_type)
 
     @classmethod
     def dequantize_4bit(
@@ -112,4 +115,5 @@ class CPUBackend:
         blocksize: int = 64,
         quant_type="fp4",
     ) -> Tensor:
-        assert False, "dequantize_4bit not yet implemented for CPU backend"
+        assert_on_cpu([A, absmax, out])
+        return dequantize_4bit_common(A, quant_state, absmax, out, blocksize, quant_type)
