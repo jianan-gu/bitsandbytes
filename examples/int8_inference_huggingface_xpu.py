@@ -1,11 +1,12 @@
 import torch
+import intel_extension_for_pytorch as ipex
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import time
 import torch._dynamo
 torch._dynamo.config.suppress_errors = True
 
 MAX_NEW_TOKENS = 64
-model_name = "facebook/opt-1.3b" #"/4T-720/xiaoli/bnb/bitsandbytes-upstream/examples/int4_weight.pt"
+model_name = "facebook/opt-6.7b" #"/4T-720/xiaoli/bnb/bitsandbytes-upstream/examples/int4_weight.pt"
 
 text = 'Hamburg is in which country?\n'
 tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -18,7 +19,11 @@ model = AutoModelForCausalLM.from_pretrained(
   load_in_8bit=True,
   torch_dtype=torch.bfloat16
 )
-#model.xpu()
+model.xpu()
+import pdb
+pdb.set_trace()
+#model = ipex.optimize_transformers(model.eval(), dtype=torch.bfloat16, device="xpu")
+input_ids.xpu()
 print('[info] model dtype', model.dtype)
 
 with torch.no_grad():

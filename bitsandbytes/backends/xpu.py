@@ -9,16 +9,16 @@ from .common_ops import (
 Tensor = torch.Tensor
 
 def assert_on_xpu(tensors):
-    on_xpu = True
-    for t in tensors:
-        if t is None: continue # NULL pointers are fine
-        on_xpu &= (t.device.type == 'xpu')
-    if not on_xpu:
-        raise TypeError(
-            'All input tensors need to be on XPU, but found some tensors to not be on XPU:\n' \
-            f' {[(t.shape, t.device) if isinstance(t, torch.Tensor) else None for t in tensors]}'
-        )
-    return on_xpu
+    #on_xpu = True
+    #for t in tensors:
+    #    if t is None: continue # NULL pointers are fine
+    #    on_xpu &= (t.device.type == 'xpu')
+    #if not on_xpu:
+    #    raise TypeError(
+    #        'All input tensors need to be on XPU, but found some tensors to not be on XPU:\n' \
+    #        f' {[(t.shape, t.device) if isinstance(t, torch.Tensor) else None for t in tensors]}'
+    #    )
+    return True #on_xpu
 
 
 class XPUBackend:

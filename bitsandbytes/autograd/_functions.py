@@ -224,7 +224,9 @@ matmul_cublas = MatMul8bit.apply
 
 def supports_igemmlt(device: torch.device) -> bool:
     """check if this device supports the optimized int8 kernel"""
-    if device == torch.device('cpu'):
+    import pdb
+    pdb.set_trace()
+    if device == torch.device('cpu') or device.type == "xpu":
         return True
     if torch.cuda.get_device_capability(device=device) < (7, 5):
         return False
@@ -232,7 +234,7 @@ def supports_igemmlt(device: torch.device) -> bool:
     nvidia16_models = ('GTX 1630', 'GTX 1650', 'GTX 1660')  # https://en.wikipedia.org/wiki/GeForce_16_series
     if any(model_name in device_name for model_name in nvidia16_models):
         return False  # these devices are technically cuda 7.5-capable, but they lack tensor cores
-    if device.type == "cpu":
+    if device.type == "cpu" or device.type == "xpu":
         #TODO: will return True once CPU backend upstream the supports
         return False
 
@@ -325,7 +327,7 @@ class MatMul8bitLt(torch.autograd.Function):
 
         # Cast A to fp16
         A_dtype = torch.float16
-        if A.device == torch.device('cpu'):
+        if A.device == torch.device('cpu') or A.device.type == "xpu":
             A_dtype = torch.bfloat16
         if A.dtype != A_dtype:
             warnings.warn(f"MatMul8bitLt: inputs will be cast from {A.dtype} to {A_dtype} during quantization")
@@ -408,7 +410,7 @@ class MatMul8bitLt(torch.autograd.Function):
         if using_igemmlt:
             C32A, SA = F.transform(CA, "col32")
             out32, Sout32 = F.igemmlt(C32A, state.CxB, SA, state.SB)
-            if bias is None or bias.dtype == torch.float16 or bias.device.type == 'cpu':
+            if bias is None or bias.dtype == torch.float16 or bias.device.type == 'cpu' or bias.device.type == "xpu":
                 # we apply the fused bias here
                 output = F.mm_dequant(out32, Sout32, SCA, state.SCB, bias=bias)
                 output = output.to(A.dtype)

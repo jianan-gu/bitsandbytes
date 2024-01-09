@@ -468,6 +468,8 @@ class Linear8bitLt(nn.Linear):
         if self.bias is not None and self.bias.dtype != x.dtype:
             self.bias.data = self.bias.data.to(x.dtype)
 
+        import pdb
+        pdb.set_trace()
         out = bnb.matmul(x, self.weight, bias=self.bias, state=self.state)
 
         if not self.state.has_fp16_weights:
